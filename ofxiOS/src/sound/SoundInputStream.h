@@ -7,21 +7,9 @@
 #pragma once
 
 #import "SoundStream.h"
-@class SoundInputStream;
-@interface SoundInputStreamContext : NSObject
-{
-@public
-	
-	AudioUnit remoteIO;
-	
+
+@interface SoundInputStream : SoundStream {
+
 }
-@property(nonatomic, assign)AudioBufferList * bufferList;
-@property(nonatomic, strong)SoundInputStream* stream;
-@end
-
-@interface SoundInputStream : SoundStream 
-
-@property(nonatomic, strong)SoundInputStreamContext* context;
--(void)start;
--(void)stop;
+@property(strong, nonatomic)id delegate;
 @end

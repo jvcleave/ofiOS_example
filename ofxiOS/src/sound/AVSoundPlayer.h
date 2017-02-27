@@ -16,9 +16,11 @@
 - (void)soundPlayerError:(NSError *)error;
 @end
 
-@interface AVSoundPlayer : NSObject <AVAudioPlayerDelegate> 
+@interface AVSoundPlayer : NSObject <AVAudioPlayerDelegate> {
+    id<AVSoundPlayerDelegate>__unsafe_unretained delegate;
+}
 
-@property(nonatomic, assign) id<AVSoundPlayerDelegate> delegate;
+@property(nonatomic, assign) id delegate;
 @property(nonatomic, retain) AVAudioPlayer * player;
 @property(nonatomic, retain) NSTimer * timer;
 

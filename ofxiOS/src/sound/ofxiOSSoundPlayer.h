@@ -7,7 +7,6 @@
 #pragma once
 
 #include "ofBaseSoundPlayer.h"
-#import "AVSoundPlayer.h"
 
 class ofxiOSSoundPlayer : public ofBaseSoundPlayer {
     
@@ -42,6 +41,8 @@ public:
     
 protected:
     
-    AVSoundPlayer* soundPlayer;
+    void * soundPlayer;
     
 };
+
+#define ofxiPhoneSoundPlayer ofxiOSSoundPlayer

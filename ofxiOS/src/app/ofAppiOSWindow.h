@@ -221,6 +221,8 @@ public:
     bool disableAntiAliasing();
     bool isAntiAliasingEnabled();
     int getAntiAliasingSampleCount();
+
+
 	ofVec3f screenSize;
 	ofVec3f windowSize; 
 	ofVec3f windowPos;

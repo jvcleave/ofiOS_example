@@ -9,6 +9,8 @@
 #include "ofSoundStream.h"
 #include "ofBaseApp.h"
 
+#import "SoundInputStream.h"
+#import "SoundOutputStream.h"
 #import <AVFoundation/AVFoundation.h>
 
 //------------------------------------------------------------------------------
@@ -50,17 +52,13 @@ int ofxiOSSoundStream::getDeviceID()  const{
 //------------------------------------------------------------------------------
 void ofxiOSSoundStream::setInput(ofBaseSoundInput * soundInput) {
 	soundInputPtr = soundInput;
-	
-	ofxiOSSoundStreamDelegate* delegate = (ofxiOSSoundStreamDelegate*)[soundInputStream delegate];
-	[delegate setInput:soundInputPtr];
+	[(ofxiOSSoundStreamDelegate *)[(id)CFBridgingRelease(soundInputStream) delegate] setInput:soundInputPtr];
 }
 
 //------------------------------------------------------------------------------
 void ofxiOSSoundStream::setOutput(ofBaseSoundOutput * soundOutput) {
 	soundOutputPtr = soundOutput;
-	
-	ofxiOSSoundStreamDelegate* delegate = (ofxiOSSoundStreamDelegate*)[soundOutputStream delegate];
-	[delegate setOutput:soundOutputPtr];
+	[(ofxiOSSoundStreamDelegate *)[(id)CFBridgingRelease(soundOutputStream) delegate] setOutput:soundOutputPtr];
 }
 
 //------------------------------------------------------------------------------
@@ -84,21 +82,22 @@ bool ofxiOSSoundStream::setup(int numOfOutChannels, int numOfInChannels, int sam
     this->numOfBuffers = numOfBuffers;
     
     if(numOfInChannels > 0) {
-        soundInputStream = [[SoundInputStream alloc] initWithNumOfChannels:numOfInChannels
+        soundInputStream = (__bridge void*)[[SoundInputStream alloc] initWithNumOfChannels:numOfInChannels
                                                             withSampleRate:sampleRate
                                                             withBufferSize:bufferSize];
         ofxiOSSoundStreamDelegate * delegate = [[ofxiOSSoundStreamDelegate alloc] initWithSoundInputApp:soundInputPtr];
-        ((SoundInputStream *)soundInputStream).delegate = delegate;
-        [(SoundInputStream *)soundInputStream start];
+        ((SoundInputStream *)CFBridgingRelease(soundInputStream)).delegate = delegate;
+        [(SoundInputStream *)CFBridgingRelease(soundInputStream) start];
     }
     
     if(numOfOutChannels > 0) {
-        soundOutputStream = [[SoundOutputStream alloc] initWithNumOfChannels:numOfOutChannels
+        SoundOutputStream* soundOutputStreamInstance = [[SoundOutputStream alloc] initWithNumOfChannels:numOfOutChannels
                                                               withSampleRate:sampleRate
                                                               withBufferSize:bufferSize];
         ofxiOSSoundStreamDelegate * delegate = [[ofxiOSSoundStreamDelegate alloc] initWithSoundOutputApp:soundOutputPtr];
-        ((SoundInputStream *)soundOutputStream).delegate = delegate;
-        [(SoundInputStream *)soundOutputStream start];
+        soundOutputStreamInstance.delegate = delegate;
+        [soundOutputStreamInstance start];
+		soundOutputStream = (__bridge void*)soundOutputStreamInstance;
     }
     
     bool bOk = (soundInputStream != NULL) || (soundOutputStream != NULL);
@@ -116,36 +115,36 @@ bool ofxiOSSoundStream::setup(ofBaseApp * app, int numOfOutChannels, int numOfIn
 //------------------------------------------------------------------------------
 void ofxiOSSoundStream::start(){
     if(soundInputStream != NULL) {
-        [(SoundInputStream *)soundInputStream start];
+        [(SoundInputStream *)CFBridgingRelease(soundInputStream) start];
     }
     
     if(soundOutputStream != NULL) {
-        [(SoundOutputStream *)soundOutputStream start];
+        [(SoundOutputStream *)CFBridgingRelease(soundOutputStream) start];
     }
 }
 
 //------------------------------------------------------------------------------
 void ofxiOSSoundStream::stop(){
     if(soundInputStream != NULL) {
-        [(SoundInputStream *)soundInputStream stop];
+        [(SoundInputStream *)CFBridgingRelease(soundInputStream) stop];
     }
     
     if(soundOutputStream != NULL) {
-        [(SoundOutputStream *)soundOutputStream stop];
+        [(SoundOutputStream *)CFBridgingRelease(soundOutputStream) stop];
     }
 }
 
 //------------------------------------------------------------------------------
 void ofxiOSSoundStream::close(){
     if(soundInputStream != NULL) {
-        [(SoundInputStream *)soundInputStream setDelegate:nil];
-        [(SoundInputStream *)soundInputStream stop];
+        //[(SoundInputStream *)CFBridgingRelease(soundInputStream) setDelegate:nil];
+        [(SoundInputStream *)CFBridgingRelease(soundInputStream) stop];
         soundInputStream = NULL;
     }
     
     if(soundOutputStream != NULL) {
-        [(SoundOutputStream *)soundInputStream setDelegate:nil];
-        [(SoundOutputStream *)soundOutputStream stop];
+        //[(SoundOutputStream *)CFBridgingRelease(soundInputStream) setDelegate:nil];
+        [(SoundOutputStream *)CFBridgingRelease(soundOutputStream) stop];
         soundOutputStream = NULL;
     }
         

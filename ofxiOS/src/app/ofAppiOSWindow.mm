@@ -100,6 +100,9 @@ void ofAppiOSWindow::setWindowShape(int w, int h) {
 	// not supported on iOS.
 }
 
+
+
+
 ofPoint	ofAppiOSWindow::getWindowPosition() {
 		
 	return windowPos;

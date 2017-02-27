@@ -7,8 +7,6 @@
 #pragma once
 
 #include "ofBaseSoundStream.h"
-#import "SoundInputStream.h"
-#import "SoundOutputStream.h"
 
 class ofxiOSSoundStream : public ofBaseSoundStream {
 
@@ -49,8 +47,8 @@ class ofxiOSSoundStream : public ofBaseSoundStream {
 		ofBaseSoundInput * soundInputPtr;
 		ofBaseSoundOutput * soundOutputPtr;
 
-		SoundInputStream* soundInputStream;
-		SoundOutputStream* soundOutputStream;
+		void * soundInputStream;
+		void * soundOutputStream;
 
 		int numOfInChannels;
 		int numOfOutChannels;
